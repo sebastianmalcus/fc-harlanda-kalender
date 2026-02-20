@@ -1,36 +1,38 @@
-name: Uppdatera Kalender via SFTP
+name: Uppdatera Fotbollskalender
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 3 * * *' # Körs automatiskt varje natt kl 03:00
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ] # Körs varje gång du sparar ändringar på GitHub
+  workflow_dispatch: # Gör att du kan starta körningen manuellt
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checka ut kod
+        uses: actions/checkout@v3
 
       - name: Installera Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Installera paket
-        run: pip install requests beautifulsoup4 icalendar
+      - name: Installera bibliotek
+        run: |
+          pip install requests beautifulsoup4 icalendar
 
-      - name: Generera ICS-fil
+      - name: Generera kalenderfil
         run: python generator.py
 
-      - name: Ladda upp via SFTP
+      - name: Ladda upp till One.com via SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           username: ${{ secrets.FTP_USERNAME }}
           server: ${{ secrets.FTP_SERVER }}
-          ssh_private_key: '' # Lämna tom om du använder lösenord
           password: ${{ secrets.FTP_PASSWORD }}
-          local_path: './kalender.ics' # Vi skickar bara själva filen
-          remote_path: '/httpd.www/' # Detta är standardmappen hos One.com
           port: 22
+          local_path: './kalender.ics'
+          remote_path: '/httpd.www/fchp/' # Din nya mapp
+          delete_remote_files: false
