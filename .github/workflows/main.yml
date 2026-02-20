@@ -2,10 +2,10 @@ name: Uppdatera Fotbollskalender
 
 on:
   schedule:
-    - cron: '0 3 * * *' # Körs automatiskt varje natt kl 03:00
+    - cron: '0 3 * * *'
   push:
-    branches: [ main ] # Körs varje gång du sparar ändringar på GitHub
-  workflow_dispatch: # Gör att du kan starta körningen manuellt
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -34,6 +34,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          remote_path: 'httpd.www/fchp/' # Borttaget inledande / för att matcha One.coms rättigheter
-          sftp_only: true # Tvingar SFTP-protokollet
-          delete_remote_files: false
+          # Vi ändrar sökvägen till en relativ sökväg som fungerar bättre med wlixcc-action
+          remote_path: 'fchp/' 
+          sftp_only: true
+          # Denna rad tvingar action att INTE försöka skapa mappar utanför din behörighet
+          create_remote_dirs: false
