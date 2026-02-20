@@ -1,21 +1,21 @@
-name: Slutgiltig Debug Fotbollskalender
+name: Hitta Webbmappen
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  locate:
     runs-on: ubuntu-latest
     steps:
       - name: Checka ut kod
         uses: actions/checkout@v3
 
-      - name: Generera kalenderfil
+      - name: Generera fil
         run: |
           pip install requests beautifulsoup4 icalendar
           python generator.py
 
-      - name: Test 1 - Ladda upp till Roten (Bredvid index.html)
+      - name: Lista ALLA mappar på servern
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           username: ${{ secrets.FTP_USERNAME }}
@@ -23,16 +23,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          remote_path: './' # Vi vet från din debug att detta ger "Success"
+          remote_path: './'
           sftp_only: true
-
-      - name: Test 2 - Ladda upp till fchp med alternativ stig
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          username: ${{ secrets.FTP_USERNAME }}
-          server: ${{ secrets.FTP_SERVER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          local_path: './kalender.ics'
-          remote_path: 'www/fchp/' # One.com använder ofta 'www' som ett alias internt
-          sftp_only: true
+          # Detta kommando listar dolda mappar för att hitta 'www' eller 'httpd.www'
+          args: '-la'
