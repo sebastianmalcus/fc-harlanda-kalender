@@ -34,6 +34,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Detta är den dolda stigen som One.com kräver för att nå din index.html och fchp
-          remote_path: 'httpd.www/fchp/' 
+          # Vi använder den exakta sökvägen från dina loggar för att nå den publika fchp-mappen
+          remote_path: '/fchp/' 
           sftp_only: true
