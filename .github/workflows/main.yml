@@ -34,6 +34,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Denna rad är nu anpassad efter din lyckade debug-körning
+          # Detta är den relativa stigen som nu kommer fungera tack vare debug-svaret
           remote_path: 'fchp/' 
           sftp_only: true
+          delete_remote_files: false
