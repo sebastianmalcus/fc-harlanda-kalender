@@ -2,10 +2,10 @@ name: Uppdatera Fotbollskalender
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 3 * * *' # Körs varje natt kl 03:00
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ] # Körs när du sparar ändringar
+  workflow_dispatch: # Gör att du kan köra manuellt
 
 jobs:
   build-and-deploy:
@@ -34,6 +34,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Vi provar nu utan undermappar för att se om den landar i din huvudvy
-          remote_path: './' 
+          # Vi går direkt in i mappen fchp som vi ser i din File Manager
+          remote_path: 'fchp/' 
           sftp_only: true
+          delete_remote_files: false
