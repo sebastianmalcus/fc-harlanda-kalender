@@ -7,67 +7,73 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-# INSTÄLLNINGAR
+# --- INSTÄLLNINGAR ---
 TEAM_NAME = "FC Härlanda"
-# Notera "?scr=fixture" för att hamna direkt på spelprogrammet
+# Länk till spelprogrammet för 2025 (Division 7B Göteborg)
 SERIES_URL = "https://www.svenskfotboll.se/serier-cuper/spelprogram/division-7b-herr/123543/?scr=fixture"
-# URL till din egen råa JSON-fil på GitHub (byt ut 'DITT_ANVÄNDARNAMN' och 'REPOT_NAMN')
-# Du hittar denna genom att klicka på 'Raw' på filen i GitHub.
-MANUAL_JSON_URL = "https://raw.githubusercontent.com/DITT_GITHUB_NAMN/DITT_REPO_NAMN/main/manual_events.json"
+# Vi läser lokalt från samma repo på Render
+MANUAL_EVENTS_FILE = "manual_events.json"
 
 @app.route('/')
 def home():
-    return f"Kalendern för {TEAM_NAME} är live! Använd /kalender.ics i din kalender-app."
+    return f"<h1>Kalender-appen är online!</h1><p>Prenumerera på: <b>/kalender.ics</b></p>"
 
 @app.route('/kalender.ics')
 def generate_ical():
     cal = Calendar()
-    cal.add('prodid', '-//FC Härlanda//')
+    cal.add('prodid', '-//FC Härlanda//NONSGML v1.0//EN')
     cal.add('version', '2.0')
-    cal.add('X-WR-CALNAME', f'{TEAM_NAME} Spelschema')
+    cal.add('X-WR-CALNAME', 'FC Härlanda Spelschema')
     cal.add('X-WR-TIMEZONE', 'Europe/Stockholm')
+    cal.add('REFRESH-INTERVAL;VALUE=DURATION', 'PT12H') # Ber kalender-appar hämta på nytt var 12:e timme
 
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-    # --- DEL 1: HÄMTA MATCHER FRÅN SVENSK FOTBOLL ---
+    # 1. HÄMTA MATCHER FRÅN SVENSK FOTBOLL
     try:
-        res = requests.get(SERIES_URL, headers=headers)
+        res = requests.get(SERIES_URL, headers=headers, timeout=10)
         soup = BeautifulSoup(res.content, 'html.parser')
-        rows = soup.find_all('tr')
         
+        # Vi letar efter rader i tabellen på sidan
+        rows = soup.select('tr')
         for row in rows:
-            if TEAM_NAME.lower() in row.text.lower():
+            row_text = row.get_text()
+            if TEAM_NAME.lower() in row_text.lower():
                 cells = row.find_all('td')
                 if len(cells) >= 4:
-                    # Vi letar efter datum (YYYY-MM-DD) och tid (HH:MM) i cellerna
-                    date_str = ""
-                    time_str = "00:00"
-                    for c in cells:
-                        val = c.text.strip()
-                        if len(val) == 10 and "-" in val: date_str = val
-                        if len(val) == 5 and ":" in val: time_str = val
+                    # Extrahera datum (YYYY-MM-DD)
+                    date_cell = row.find('span', class_='date') or cells[0]
+                    date_str = "".join(filter(lambda x: x.isdigit() or x == '-', date_cell.text.strip()))
                     
-                    if date_str:
-                        match_text = cells[2].text.strip().replace('\n', ' ')
-                        arena = cells[5].text.strip() if len(cells) > 5 else "Ej angivet"
-                        
+                    # Extrahera tid (HH:MM)
+                    time_str = cells[1].text.strip() if len(cells) > 1 else "00:00"
+                    if ":" not in time_str: time_str = "00:00"
+
+                    # Extrahera matchnamn (Lag A - Lag B)
+                    match_name = cells[2].text.strip().replace('\n', ' ').replace('  ', ' ')
+                    
+                    # Extrahera arena
+                    arena = cells[5].text.strip() if len(cells) > 5 else "Ej angivet"
+
+                    try:
                         start_dt = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M")
                         
                         e = Event()
-                        e.add('summary', match_text)
+                        e.add('summary', match_name)
                         e.add('dtstart', start_dt)
                         e.add('dtend', start_dt + timedelta(hours=2))
                         e.add('location', arena)
+                        e.add('description', f"Seriematch - Hämtad från Svensk Fotboll\nArena: {arena}")
                         cal.add_component(e)
-    except Exception as err:
-        print(f"Match-error: {err}")
+                    except Exception as parse_err:
+                        print(f"Kunde inte tolka datum: {date_str} {time_str}")
+    except Exception as e:
+        print(f"Fel vid skrapning: {e}")
 
-    # --- DEL 2: HÄMTA MANUELLA HÄNDELSER FRÅN GITHUB ---
+    # 2. LÄGG TILL MANUELLA HÄNDELSER FRÅN DIN JSON-FIL
     try:
-        # Vi hämtar JSON direkt från din GitHub-fil
-        raw_res = requests.get(MANUAL_JSON_URL)
-        if raw_res.status_code == 200:
-            manual_data = raw_res.json()
+        with open(MANUAL_EVENTS_FILE, 'r', encoding='utf-8') as f:
+            manual_data = json.load(f)
             for item in manual_data:
                 start_dt = datetime.strptime(item['start'], "%Y-%m-%d %H:%M")
                 
@@ -78,10 +84,15 @@ def generate_ical():
                 e.add('location', item.get('location', ''))
                 e.add('description', item.get('description', ''))
                 cal.add_component(e)
-    except Exception as err:
-        print(f"Manual-error: {err}")
+    except Exception as e:
+        print(f"Fel vid inläsning av manuella events: {e}")
 
-    return Response(cal.to_ical(), mimetype='text/calendar', headers={"Content-Disposition":"attachment;filename=kalender.ics"})
+    return Response(
+        cal.to_ical(),
+        mimetype='text/calendar',
+        headers={"Content-Disposition": "attachment; filename=kalender.ics"}
+    )
 
 if __name__ == "__main__":
+    # För lokal testning, men Render använder Gunicorn
     app.run(host='0.0.0.0', port=5000)
