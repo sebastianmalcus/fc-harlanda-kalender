@@ -34,7 +34,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Detta är den relativa stigen som nu kommer fungera tack vare debug-svaret
-          remote_path: 'fchp/' 
+          # Vi kombinerar nu den lyckade startpunkten med målmappen
+          remote_path: './fchp/' 
           sftp_only: true
-          delete_remote_files: false
+          # Detta förhindrar att roboten försöker skapa mappar den inte får röra
+          create_remote_dirs: false
