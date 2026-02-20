@@ -34,5 +34,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          remote_path: '/httpd.www/fchp/' # Din nya mapp
+          remote_path: 'httpd.www/fchp/' # Borttaget inledande / för att matcha One.coms rättigheter
+          sftp_only: true # Tvingar SFTP-protokollet
           delete_remote_files: false
