@@ -34,6 +34,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Baserat på din bild: gå direkt in i fchp som ligger i roten
-          remote_path: 'fchp/' 
+          # Vi provar nu utan undermappar för att se om den landar i din huvudvy
+          remote_path: './' 
           sftp_only: true
