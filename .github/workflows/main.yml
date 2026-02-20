@@ -1,4 +1,4 @@
-name: Uppdatera Fotbollskalender - Plan B
+name: Uppdatera Fotbollskalender - Klättra ut
 
 on:
   schedule:
@@ -34,7 +34,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Vi mappar sökvägen exakt som den ser ut i din File Manager
-          remote_path: 'elvaett.se/fchp/' 
+          # Vi backar ut två steg från din hemma-mapp för att nå httpd.www
+          remote_path: '../../httpd.www/fchp/' 
           sftp_only: true
-          delete_remote_files: false
