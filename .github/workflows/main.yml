@@ -34,8 +34,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Vi ändrar sökvägen till en relativ sökväg som fungerar bättre med wlixcc-action
+          # Baserat på din bild: gå direkt in i fchp som ligger i roten
           remote_path: 'fchp/' 
           sftp_only: true
-          # Denna rad tvingar action att INTE försöka skapa mappar utanför din behörighet
-          create_remote_dirs: false
