@@ -1,6 +1,8 @@
-name: Uppdatera Fotbollskalender
+name: Uppdatera Fotbollskalender - Plan B
 
 on:
+  schedule:
+    - cron: '0 3 * * *'
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -12,12 +14,19 @@ jobs:
       - name: Checka ut kod
         uses: actions/checkout@v3
 
-      - name: Installera Python och generera fil
+      - name: Installera Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Installera bibliotek
         run: |
           pip install requests beautifulsoup4 icalendar
-          python generator.py
 
-      - name: Ladda upp till den publika mappen
+      - name: Generera kalenderfil
+        run: python generator.py
+
+      - name: Ladda upp till One.com via SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           username: ${{ secrets.FTP_USERNAME }}
@@ -25,6 +34,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: './kalender.ics'
-          # Vi provar nu den absoluta stigen till din webbmapp
-          remote_path: '/elvaett.se/fchp/'
+          # Vi mappar sökvägen exakt som den ser ut i din File Manager
+          remote_path: 'elvaett.se/fchp/' 
           sftp_only: true
+          delete_remote_files: false
