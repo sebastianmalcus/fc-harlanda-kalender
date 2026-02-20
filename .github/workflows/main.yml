@@ -1,0 +1,40 @@
+name: Uppdatera Kalender
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Körs varje natt kl 03:00
+  push:
+    branches: [ main ] # Körs varje gång du sparar ändringar
+  workflow_dispatch: # Tillåter dig att köra manuellt
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Installera Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Installera paket
+        run: pip install requests beautifulsoup4 icalendar
+        
+      - name: Generera ICS-fil
+        run: python generator.py
+        
+      - name: Ladda upp till One.com via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ./kalender-mapp/ # Ändra till mappen på din server
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            generator.py
+            manual_events.json
+            requirements.txt
