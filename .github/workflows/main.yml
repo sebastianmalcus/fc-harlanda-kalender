@@ -1,11 +1,14 @@
-name: Uppdatera Fotbollskalender - Klättra ut
+name: Publicera Kalender via GitHub Pages
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 3 * * *' # Körs varje natt kl 03:00
   push:
     branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -14,26 +17,17 @@ jobs:
       - name: Checka ut kod
         uses: actions/checkout@v3
 
-      - name: Installera Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Installera bibliotek
+      - name: Installera Python och bibliotek
         run: |
           pip install requests beautifulsoup4 icalendar
 
       - name: Generera kalenderfil
         run: python generator.py
 
-      - name: Ladda upp till One.com via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          username: ${{ secrets.FTP_USERNAME }}
-          server: ${{ secrets.FTP_SERVER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          local_path: './kalender.ics'
-          # Vi backar ut två steg från din hemma-mapp för att nå httpd.www
-          remote_path: '../../httpd.www/fchp/' 
-          sftp_only: true
+      - name: Spara och pusha filen till GitHub
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add kalender.ics
+          git commit -m "Uppdaterad kalender: $(date)" || echo "Inga ändringar att spara"
+          git push
