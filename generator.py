@@ -12,7 +12,8 @@ def generate_calendar():
     cal = Calendar()
     cal.add('prodid', '-//FC Harlanda//Fotbollskalender//SV')
     cal.add('version', '2.0')
-    cal.add('x-wr-calname', 'FC Härlanda Total')
+    # HÄR ÄR DET NYA NAMNET:
+    cal.add('x-wr-calname', 'FC Härlanda Prisoners')
     
     local_tz = pytz.timezone("Europe/Stockholm")
 
@@ -24,20 +25,17 @@ def generate_calendar():
         reader = csv.DictReader(f)
         
         for row in reader:
-            # Förväntade kolumner: Datum, Start, Slut, Plats, Typ, Beskrivning
             try:
                 datum = row['Datum'].strip()
                 start_tid = row['Start'].strip()
                 slut_tid = row['Slut'].strip()
                 plats = row['Plats'].strip()
                 typ = row['Typ'].strip()
-                # Hämtar text från kolumnen Beskrivning om den finns, annars tom sträng
                 beskrivning = row.get('Beskrivning', '').strip()
                 
                 event = Event()
                 event.add('summary', f"{typ}: {plats}")
                 
-                # Skapar datetime-objekt
                 start_dt = local_tz.localize(datetime.strptime(f"{datum} {start_tid}", "%Y-%m-%d %H:%M"))
                 end_dt = local_tz.localize(datetime.strptime(f"{datum} {slut_tid}", "%Y-%m-%d %H:%M"))
                 
@@ -45,7 +43,6 @@ def generate_calendar():
                 event.add('dtend', end_dt)
                 event.add('location', plats)
                 
-                # Lägger till den anpassade beskrivningen från Google Sheets
                 if beskrivning:
                     event.add('description', beskrivning)
                 
@@ -58,14 +55,12 @@ def generate_calendar():
         print(f"Kunde inte läsa Google Sheets: {e}")
 
     # --- DEL 2: HÄMTA MATCHER (VÄNTAR PÅ API-NYCKEL) ---
-    # Temporär testmatch tills FOGIS-nyckeln är på plats
     test_event = Event()
     test_event.add('summary', 'VÄNTAR PÅ API: FC Härlanda Match')
     test_event.add('dtstart', local_tz.localize(datetime(2025, 4, 15, 19, 0)))
     test_event.add('dtend', local_tz.localize(datetime(2025, 4, 15, 21, 0)))
     cal.add_component(test_event)
 
-    # Skriver ner den färdiga .ics-filen
     with open('kalender.ics', 'wb') as f:
         f.write(cal.to_ical())
 
