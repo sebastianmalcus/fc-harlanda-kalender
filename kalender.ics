@@ -32,13 +32,6 @@ LOCATION:Heden - Nr 3 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Fotboll: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260309T200000
-DTEND;TZID=Europe/Stockholm:20260309T214500
-DESCRIPTION:Inlagt via Google Sheets
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Fotboll: Heden - Nr 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260312T183000
 DTEND;TZID=Europe/Stockholm:20260312T200000
 DESCRIPTION:Inlagt via Google Sheets
