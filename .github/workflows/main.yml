@@ -2,7 +2,7 @@ name: Publicera Kalender via GitHub Pages
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Körs var 6:e timme
+    - cron: '0 */6 * * *'
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -25,6 +25,9 @@ jobs:
           pip install requests beautifulsoup4 icalendar
 
       - name: Generera kalenderfil
+        env:
+          # HÄR KOPPLAR VI DIN SECRET TILL KODEN
+          FOGIS_API_KEY: ${{ secrets.FOGIS_API_KEY }}
         run: python generator.py
 
       - name: Spara filen i arkivet
