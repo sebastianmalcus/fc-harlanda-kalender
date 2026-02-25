@@ -20,18 +20,19 @@ def generate_calendar():
     try:
         response = requests.get(SHEET_CSV_URL)
         response.encoding = 'utf-8'
-        # Vi använder StringIO för att läsa texten som en fil
         f = io.StringIO(response.text)
         reader = csv.DictReader(f)
         
         for row in reader:
-            # Förväntade kolumner: Datum, Start, Slut, Plats, Typ
+            # Förväntade kolumner: Datum, Start, Slut, Plats, Typ, Beskrivning
             try:
                 datum = row['Datum'].strip()
                 start_tid = row['Start'].strip()
                 slut_tid = row['Slut'].strip()
                 plats = row['Plats'].strip()
                 typ = row['Typ'].strip()
+                # Hämtar text från kolumnen Beskrivning om den finns, annars tom sträng
+                beskrivning = row.get('Beskrivning', '').strip()
                 
                 event = Event()
                 event.add('summary', f"{typ}: {plats}")
@@ -43,11 +44,14 @@ def generate_calendar():
                 event.add('dtstart', start_dt)
                 event.add('dtend', end_dt)
                 event.add('location', plats)
-                event.add('description', f"Inlagt via Google Sheets")
+                
+                # Lägger till den anpassade beskrivningen från Google Sheets
+                if beskrivning:
+                    event.add('description', beskrivning)
                 
                 cal.add_component(event)
             except (KeyError, ValueError) as e:
-                print(f"Hoppar över rad pga felaktigt format: {e}")
+                print(f"Hoppar över rad pga felaktigt format eller saknad rubrik: {e}")
                 continue
                 
     except Exception as e:
