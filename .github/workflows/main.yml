@@ -2,8 +2,7 @@ name: Publicera Kalender via GitHub Pages
 
 on:
   schedule:
-    # Körs nu var sjätte timme (kl 00, 06, 12, 18)
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *' # Körs var 6:e timme
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -17,6 +16,9 @@ jobs:
     steps:
       - name: Checka ut kod
         uses: actions/checkout@v3
+
+      - name: Vänta i 30 sekunder (Delay)
+        run: sleep 30
 
       - name: Installera Python och bibliotek
         run: |
