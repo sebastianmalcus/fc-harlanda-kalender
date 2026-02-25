@@ -11,12 +11,7 @@ def generate_calendar():
     SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVrJh6-cKAJ86xyrZHNhjIaaCbffnM2jiEe9jYbU0C1JGysENbvXTKbiYTuL8wR9691tcTR2Oe8P4H/pub?output=csv"
     FOGIS_API_KEY = os.getenv('FOGIS_API_KEY')
     
-    # Debug: Kolla om nyckeln finns (maskerat)
-    if FOGIS_API_KEY:
-        print(f"DEBUG: Nyckel laddad. Börjar på: {FOGIS_API_KEY[:2]}... (Längd: {len(FOGIS_API_KEY)})")
-    else:
-        print("DEBUG: Ingen nyckel hittades i miljövariablerna!")
-
+    # Intervall: 1 jan 2025 -> 10 år framåt
     date_from = "2025-01-01"
     date_to = (datetime.now() + timedelta(days=3650)).strftime('%Y-%m-%d')
     
@@ -26,12 +21,11 @@ def generate_calendar():
     cal.add('x-wr-calname', 'FC Härlanda Prisoners')
     local_tz = pytz.timezone("Europe/Stockholm")
 
-    # --- GOOGLE SHEETS ---
+    # --- DEL 1: GOOGLE SHEETS ---
     print("--- STARTAR INLÄSNING FRÅN GOOGLE SHEETS ---")
     try:
         response = requests.get(SHEET_CSV_URL)
         reader = csv.DictReader(io.StringIO(response.text))
-        count = 0
         for row in reader:
             try:
                 start_dt = local_tz.localize(datetime.strptime(f"{row['Datum']} {row['Start']}", "%Y-%m-%d %H:%M"))
@@ -40,29 +34,34 @@ def generate_calendar():
                 event.add('dtstart', start_dt)
                 event.add('dtend', start_dt + timedelta(hours=2))
                 cal.add_component(event)
-                count += 1
             except: continue
-        print(f"Hittade {count} händelser i Sheets.")
-    except: pass
+        print("Sheets klart.")
+    except: print("Sheets misslyckades.")
 
-    # --- FOGIS API ---
+    # --- DEL 2: FOGIS API ---
     print("\n--- STARTAR ANROP TILL FOGIS API ---")
     if FOGIS_API_KEY:
         try:
             api_url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}"
-            # Viktigt: Här skickar vi nyckeln i headern
-            headers = {'Ocp-Apim-Subscription-Key': FOGIS_API_KEY.strip()}
             
-            print(f"Anropar: {api_url}")
+            # Vi skickar med BÅDA varianterna av headers för att vara helt säkra
+            headers = {
+                'Ocp-Apim-Subscription-Key': FOGIS_API_KEY.strip(),
+                'x-api-key': FOGIS_API_KEY.strip(),
+                'Cache-Control': 'no-cache'
+            }
+            
+            print(f"Anropar med maskad nyckel: {FOGIS_API_KEY[:4]}...")
             res = requests.get(api_url, headers=headers)
             print(f"HTTP Status: {res.status_code}")
             
             if res.status_code == 200:
                 data = res.json()
                 games = data.get('games', [])
-                match_count = 0
+                print(f"Hittade {len(games)} matcher i API-svaret.")
+                
                 for g in games:
-                    # Filtrera på ert Team ID
+                    # Filtrera på Team ID 107561
                     if g.get('homeTeamId') == 107561 or g.get('awayTeamId') == 107561:
                         event = Event()
                         event.add('summary', f"Match: {g.get('homeTeamName')} - {g.get('awayTeamName')}")
@@ -74,8 +73,7 @@ def generate_calendar():
                             event.add('dtend', dt_start + timedelta(hours=2))
                             event.add('location', g.get('venueName', 'Ej fastställt'))
                             cal.add_component(event)
-                            match_count += 1
-                print(f"Lade till {match_count} matcher.")
+                print("Matcher inlagda.")
             else:
                 print(f"API Error: {res.text}")
         except Exception as e:
@@ -83,6 +81,7 @@ def generate_calendar():
 
     with open('kalender.ics', 'wb') as f:
         f.write(cal.to_ical())
+    print("\n--- KLART ---")
 
 if __name__ == "__main__":
     generate_calendar()
