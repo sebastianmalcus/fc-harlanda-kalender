@@ -1,7 +1,7 @@
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//FC Harlanda//Fotbollskalender//SV
-X-WR-CALNAME:FC Härlanda Total
+X-WR-CALNAME:FC Härlanda Prisoners
 BEGIN:VEVENT
 SUMMARY:Futsal: Rosendalshallen - B-Hallen
 DTSTART;TZID=Europe/Stockholm:20260226T200000
