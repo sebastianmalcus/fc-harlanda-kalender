@@ -10,8 +10,9 @@ def generate_calendar():
     # Inställningar
     SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVrJh6-cKAJ86xyrZHNhjIaaCbffnM2jiEe9jYbU0C1JGysENbvXTKbiYTuL8wR9691tcTR2Oe8P4H/pub?output=csv"
     FOGIS_API_KEY = os.getenv('FOGIS_API_KEY')
-    # Klubb-ID för FC Härlanda Prisoners (detta kan behöva justeras om det inte ger träff)
-    CLUB_ID = "123543" 
+    
+    # ID-nummer hämtade från din JSON-data
+    TEAM_ID = "107561" 
     
     cal = Calendar()
     cal.add('prodid', '-//FC Harlanda//Fotbollskalender//SV')
@@ -24,51 +25,74 @@ def generate_calendar():
     try:
         response = requests.get(SHEET_CSV_URL)
         response.encoding = 'utf-8'
-        reader = csv.DictReader(io.StringIO(response.text))
+        f = io.StringIO(response.text)
+        reader = csv.DictReader(f)
+        
         for row in reader:
             try:
-                start_dt = local_tz.localize(datetime.strptime(f"{row['Datum']} {row['Start']}", "%Y-%m-%d %H:%M"))
-                end_dt = local_tz.localize(datetime.strptime(f"{row['Datum']} {row['Slut']}", "%Y-%m-%d %H:%M"))
+                datum = row['Datum'].strip()
+                start_tid = row['Start'].strip()
+                slut_tid = row['Slut'].strip()
+                plats = row['Plats'].strip()
+                typ = row['Typ'].strip()
+                beskrivning = row.get('Beskrivning', '').strip()
                 
                 event = Event()
-                event.add('summary', f"{row['Typ']}: {row['Plats']}")
+                event.add('summary', f"{typ}: {plats}")
+                
+                start_dt = local_tz.localize(datetime.strptime(f"{datum} {start_tid}", "%Y-%m-%d %H:%M"))
+                end_dt = local_tz.localize(datetime.strptime(f"{datum} {slut_tid}", "%Y-%m-%d %H:%M"))
+                
                 event.add('dtstart', start_dt)
                 event.add('dtend', end_dt)
-                event.add('location', row['Plats'])
-                if row.get('Beskrivning'):
-                    event.add('description', row['Beskrivning'])
+                event.add('location', plats)
+                if beskrivning:
+                    event.add('description', beskrivning)
+                
                 cal.add_component(event)
-            except: continue
+            except Exception as e:
+                continue
+                
     except Exception as e:
         print(f"Sheet-fel: {e}")
 
     # --- DEL 2: HÄMTA MATCHER FRÅN FOGIS API ---
     if FOGIS_API_KEY:
         try:
-            # Vi anropar deras endpoint för klubbens matcher
-            api_url = f"https://api-fogis-association.azure-api.net/fogis/Clubs/Matcher?clubId={CLUB_ID}"
+            # Vi använder Teams/Matcher med ditt specifika teamId
+            api_url = f"https://api-fogis-association.azure-api.net/fogis/Teams/Matcher?teamId={TEAM_ID}"
             headers = {'Ocp-Apim-Subscription-Key': FOGIS_API_KEY}
             
             res = requests.get(api_url, headers=headers)
             if res.status_code == 200:
                 matches = res.json()
                 for m in matches:
-                    # Skapa match-event
-                    event = Event()
                     home = m.get('homeTeamName', 'Hemmalag')
                     away = m.get('awayTeamName', 'Bortalag')
+                    
+                    event = Event()
                     event.add('summary', f"Match: {home} - {away}")
                     
-                    # Tidshantering från ISO-format
-                    match_date = datetime.fromisoformat(m.get('matchDate').replace('Z', '+00:00'))
-                    event.add('dtstart', match_date)
-                    event.add('dtend', match_date + timedelta(hours=2))
-                    event.add('location', m.get('venueName', 'Ej fastställt'))
-                    event.add('description', f"Serie: {m.get('tournamentName')}\nMatchnr: {m.get('matchNumber')}")
-                    cal.add_component(event)
+                    # Tidshantering
+                    raw_date = m.get('matchDate')
+                    if raw_date:
+                        # Konvertera ISO-tid (t.ex. 2025-04-15T19:00:00) till datetime
+                        # Vi antar att tiden från API:et redan är lokal svensk tid
+                        dt_start = datetime.fromisoformat(raw_date.replace('Z', ''))
+                        dt_start = local_tz.localize(dt_start)
+                        
+                        event.add('dtstart', dt_start)
+                        event.add('dtend', dt_start + timedelta(hours=2))
+                        event.add('location', m.get('venueName', 'Ej fastställt'))
+                        event.add('description', f"Serie: {m.get('competitionName')}\nMatchnr: {m.get('matchNumber')}")
+                        
+                        cal.add_component(event)
+            else:
+                print(f"API Error {res.status_code}")
         except Exception as e:
             print(f"API-fel: {e}")
 
+    # Skriver ner den färdiga .ics-filen
     with open('kalender.ics', 'wb') as f:
         f.write(cal.to_ical())
 
