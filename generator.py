@@ -11,9 +11,9 @@ def generate_calendar():
     SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQVrJh6-cKAJ86xyrZHNhjIaaCbffnM2jiEe9jYbU0C1JGysENbvXTKbiYTuL8wR9691tcTR2Oe8P4H/pub?output=csv"
     FOGIS_API_KEY = os.getenv('FOGIS_API_KEY', '').strip()
     
-    # Datumintervall för anropet
-    date_from = "2025-01-01"
-    date_to = (datetime.now() + timedelta(days=3650)).strftime('%Y-%m-%d')
+    # Vi hämtar matcher för hela 2026
+    date_from = datetime.now().strftime('%Y-%m-%d')
+    date_to = "2026-12-31"
     
     cal = Calendar()
     cal.add('prodid', '-//FC Harlanda//Fotbollskalender//SV')
@@ -36,11 +36,11 @@ def generate_calendar():
                 event.add('location', row['Plats'])
                 cal.add_component(event)
             except: continue
-    except: print("Sheets misslyckades.")
+    except: pass
 
-    # --- DEL 2: FOGIS API (MATCHER) ---
+    # --- DEL 2: FOGIS API (MATCHER 2026) ---
     if FOGIS_API_KEY:
-        # URL som vi nu vet fungerar med din nyckel
+        # Vi använder den beprövade URL:en med parametern w=3 för alla matcher
         api_url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}&w=3"
         headers = {'Ocp-Apim-Subscription-Key': FOGIS_API_KEY}
         
@@ -48,45 +48,22 @@ def generate_calendar():
             res = requests.get(api_url, headers=headers)
             if res.status_code == 200:
                 data = res.json()
-                games = data.get('games', [])
-                
-                for g in games:
-                    # Vi filtrerar på Team ID 107561 (Prisoners)
+                for g in data.get('games', []):
+                    # Filtrera på Prisoners Team ID: 107561
                     if g.get('homeTeamId') == 107561 or g.get('awayTeamId') == 107561:
-                        home = g.get('homeTeamName')
-                        away = g.get('awayTeamName')
-                        
                         event = Event()
-                        # Om matchen är spelad lägger vi till resultatet i rubriken
-                        summary = f"Match: {home} - {away}"
-                        if g.get('isFinished') and g.get('result'):
-                            summary += f" ({g.get('result')})"
+                        event.add('summary', f"Match: {g.get('homeTeamName')} - {g.get('awayTeamName')}")
                         
-                        event.add('summary', summary)
-                        
-                        # Tidshantering från timeAsDateTime (t.ex. 2026-04-07T20:15:00)
                         raw_date = g.get('timeAsDateTime')
                         if raw_date:
-                            dt_start = datetime.fromisoformat(raw_date.replace('Z', ''))
-                            dt_start = local_tz.localize(dt_start)
-                            
+                            dt_start = local_tz.localize(datetime.fromisoformat(raw_date.replace('Z', '')))
                             event.add('dtstart', dt_start)
                             event.add('dtend', dt_start + timedelta(hours=2))
                             event.add('location', g.get('venueName', 'Ej fastställt'))
-                            
-                            # Lägg till domare och serie i beskrivningen
-                            desc = f"Serie: {g.get('competitionName')}\n"
-                            if g.get('referees') and g.get('referees').get('name'):
-                                desc += f"Domare: {g['referees']['name']}"
-                            event.add('description', desc)
-                            
+                            event.add('description', f"Serie: {g.get('competitionName')}\nMatchnr: {g.get('gameNumber')}")
                             cal.add_component(event)
-            else:
-                print(f"API Error {res.status_code}")
-        except Exception as e:
-            print(f"API Systemfel: {e}")
+        except: pass
 
-    # --- SPARA FIL ---
     with open('kalender.ics', 'wb') as f:
         f.write(cal.to_ical())
 
