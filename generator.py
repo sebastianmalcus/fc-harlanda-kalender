@@ -9,8 +9,8 @@ import pytz
 
 # --- KONFIGURATION ---
 FOGIS_API_KEY = os.getenv('FOGIS_API_KEY', '').strip()
-GOOGLE_JSON = os.getenv('GOOGLE_CREDENTIALS_JSON', '').strip() # Se till att din GitHub Secret heter detta
-SPREADSHEET_NAME = "FC Härlanda Kalender" # Ändra till exakt vad ditt kalkylark heter
+GOOGLE_JSON = os.getenv('GOOGLE_CREDENTIALS_JSON', '').strip() 
+SPREADSHEET_NAME = "kalenderFCHP" # <-- Ditt nya namn!
 TEAM_ID = 107561
 
 def sync_and_generate():
@@ -20,6 +20,10 @@ def sync_and_generate():
     # 1. ANSLUT TILL GOOGLE SHEETS
     # ==========================================
     print("Ansluter till Google Sheets...")
+    if not GOOGLE_JSON:
+        print("FEL: GOOGLE_CREDENTIALS_JSON saknas i Secrets.")
+        return
+        
     scopes = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
@@ -28,16 +32,25 @@ def sync_and_generate():
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
     client = gspread.authorize(creds)
     
-    sheet = client.open(SPREADSHEET_NAME).sheet1
+    try:
+        sheet = client.open(SPREADSHEET_NAME).sheet1
+    except gspread.exceptions.SpreadsheetNotFound:
+        print(f"FEL: Hittade inte kalkylarket '{SPREADSHEET_NAME}'. Har du kommit ihåg att klicka på 'Dela' och lägga till robotens mailadress?")
+        return
+
+    # Hämta befintlig data och sätt headers om arket är helt tomt
     all_rows = sheet.get_all_records()
-    
-    # Skapa ett register över alla MATCHER i arket (Radnummer börjar på 2 i gspread)
-    # Key = Matchnr (sträng), Value = Dictionary med info om raden
+    if not all_rows and sheet.row_values(1) == []:
+        print("Arket är tomt, skapar rubriker...")
+        sheet.append_row(['Datum', 'Start', 'Slut', 'Plats', 'Typ', 'Beskrivning', 'Matchnr'])
+        all_rows = [] 
+
+    # Skapa register över befintliga matcher i arket
     sheet_matches = {}
     for i, row in enumerate(all_rows):
-        if row.get('Typ') == 'Match' and row.get('Matchnr'):
+        if str(row.get('Typ', '')) == 'Match' and row.get('Matchnr'):
             sheet_matches[str(row['Matchnr'])] = {
-                'row_index': i + 2,
+                'row_index': i + 2, # +2 eftersom header är rad 1 och koden börjar räkna på 0
                 'datum': str(row.get('Datum', '')),
                 'start': str(row.get('Start', '')),
                 'plats': str(row.get('Plats', ''))
@@ -47,6 +60,10 @@ def sync_and_generate():
     # 2. HÄMTA DATA FRÅN FOGIS
     # ==========================================
     print("Hämtar matcher från FOGIS...")
+    if not FOGIS_API_KEY:
+        print("FEL: FOGIS_API_KEY saknas i Secrets.")
+        return
+        
     date_from = "2026-01-01"
     date_to = "2026-12-31"
     url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}&w=3"
@@ -64,12 +81,12 @@ def sync_and_generate():
     fogis_data = response.json().get('games', [])
     prisoners_games = [g for g in fogis_data if g.get('homeTeamId') == TEAM_ID or g.get('awayTeamId') == TEAM_ID]
     
-    api_match_numbers = [] # För att hålla koll på vilka matcher som fortfarande är aktiva
+    api_match_numbers = [] 
     
     # ==========================================
     # 3. SYNKRONISERA FOGIS -> GOOGLE SHEETS
     # ==========================================
-    print("Synkroniserar data till kalkylarket...")
+    print(f"Hittade {len(prisoners_games)} matcher i FOGIS för laget. Synkroniserar...")
     
     for g in prisoners_games:
         match_nr = str(g.get('gameNumber'))
@@ -103,9 +120,7 @@ def sync_and_generate():
     for match_nr, data in sheet_matches.items():
         if match_nr not in api_match_numbers:
             print(f"Match {match_nr} saknas i FOGIS. Markerar som INSTÄLLD.")
-            row_idx = data['row_index']
-            # Skriv in "INSTÄLLD" i Beskrivnings-fältet (kolumn F)
-            sheet.update_cell(row_idx, 6, "INSTÄLLD / BORTTAGEN FRÅN FOGIS")
+            sheet.update_cell(data['row_index'], 6, "INSTÄLLD / BORTTAGEN FRÅN FOGIS")
 
     # ==========================================
     # 4. SKAPA KALENDER.ICS FRÅN KALKYLARKET
@@ -159,7 +174,7 @@ def sync_and_generate():
     with open('kalender.ics', 'wb') as f:
         f.write(cal.to_ical())
     
-    print("Allt klart! kalender.ics har sparats.")
+    print("Allt klart! kalender.ics har skapats.")
 
 if __name__ == "__main__":
     sync_and_generate()
