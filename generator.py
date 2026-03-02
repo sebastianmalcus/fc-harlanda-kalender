@@ -32,7 +32,9 @@ def sync_and_generate():
     sheet_matches = {}
     for i, row in enumerate(all_rows):
         if str(row.get('Källa', '')).upper() == 'FOGIS' and row.get('Matchnr'):
-            sheet_matches[str(row['Matchnr'])] = (i + 2, row)
+            # Säkerhetsfix: Ta bort ev. apostrofer och inledande nollor för en skottsäker jämförelse
+            safe_id = str(row['Matchnr']).replace("'", "").lstrip('0')
+            sheet_matches[safe_id] = (i + 2, row)
 
     # ==========================================
     # 2. HÄMTA MATCHER FRÅN FOGIS
@@ -54,12 +56,20 @@ def sync_and_generate():
     data = response.json()
     games = data.get('games', [])
     prisoners_games = [g for g in games if g.get('homeTeamId') == TEAM_ID or g.get('awayTeamId') == TEAM_ID]
-    api_matches = {str(g.get('gameNumber')): g for g in prisoners_games}
+    
+    api_matches = {}
+    for g in prisoners_games:
+        safe_id = str(g.get('gameNumber', '')).lstrip('0')
+        api_matches[safe_id] = g
 
     # ==========================================
     # 3. SYNKRONISERA OCH LOGGA FÖRÄNDRINGAR
     # ==========================================
-    for m_nr, g in api_matches.items():
+    for safe_id, g in api_matches.items():
+        m_nr_original = str(g.get('gameNumber', ''))
+        # Tvinga textformat i Google Sheets med en inledande apostrof
+        sheet_m_nr = f"'{m_nr_original}" 
+        
         match_dt_str = g.get('timeAsDateTime', '')
         
         # Tidslogik: Samling 75 min innan, Slut 110 min efter
@@ -69,9 +79,9 @@ def sync_and_generate():
             slut_dt = match_start_dt + timedelta(minutes=110)
             
             datum = samling_dt.strftime("%Y-%m-%d")
-            tid = samling_dt.strftime("%H:%M")          # Samlingstid
-            slut_tid = slut_dt.strftime("%H:%M")        # Sluttid
-            match_tid_str = match_start_dt.strftime("%H:%M") # Faktisk matchstart
+            tid = samling_dt.strftime("%H:%M")
+            slut_tid = slut_dt.strftime("%H:%M")
+            match_tid_str = match_start_dt.strftime("%H:%M")
         else:
             datum = match_dt_str.split('T')[0] if match_dt_str else ''
             tid = ''
@@ -82,11 +92,10 @@ def sync_and_generate():
         hemma = g.get('homeTeamName', '')
         borta = g.get('awayTeamName', '')
         
-        # Ny beskrivning med tydlig matchstart
         desc = f"Match: {hemma} - {borta}\nMatchstart: {match_tid_str}"
         
-        if m_nr in sheet_matches:
-            row_idx, old_data = sheet_matches[m_nr]
+        if safe_id in sheet_matches:
+            row_idx, old_data = sheet_matches[safe_id]
             changes = []
             
             if str(old_data.get('Datum', '')) != datum:
@@ -98,26 +107,26 @@ def sync_and_generate():
             if str(old_data.get('Plats', '')) != plats:
                 changes.append(f"Plats: {old_data.get('Plats', '')} -> {plats}")
                 
-            # Uppdatera om något viktigt ändrats (eller om beskrivningen är gammal)
             if changes or str(old_data.get('Beskrivning', '')) != desc:
                 change_log = " | ".join(changes) if changes else "Beskrivning uppdaterad"
-                print(f"🔄 Uppdaterar match {m_nr}: {change_log}")
-                updated_row = [datum, tid, slut_tid, plats, "Match", desc, m_nr, "FOGIS", change_log, now_str, "TRUE"]
+                print(f"🔄 Uppdaterar match {m_nr_original}: {change_log}")
+                updated_row = [datum, tid, slut_tid, plats, "Match", desc, sheet_m_nr, "FOGIS", change_log, now_str, "TRUE"]
                 sheet.update(f"A{row_idx}:K{row_idx}", [updated_row])
             elif str(old_data.get('I Kalender', '')).upper() != 'TRUE':
-                print(f"🔄 Återaktiverar match {m_nr}")
+                print(f"🔄 Återaktiverar match {m_nr_original}")
                 sheet.update_cell(row_idx, 9, "Återaktiverad från FOGIS") 
                 sheet.update_cell(row_idx, 10, now_str) 
                 sheet.update_cell(row_idx, 11, "TRUE")  
         else:
-            print(f"➕ Lägger till ny match: {m_nr} (Samling {tid})")
-            new_row = [datum, tid, slut_tid, plats, "Match", desc, m_nr, "FOGIS", "Ny match", now_str, "TRUE"]
+            print(f"➕ Lägger till ny match: {m_nr_original} (Samling {tid})")
+            new_row = [datum, tid, slut_tid, plats, "Match", desc, sheet_m_nr, "FOGIS", "Ny match", now_str, "TRUE"]
             sheet.append_row(new_row)
 
     # 3b. Hitta inställda/borttagna matcher
-    for m_nr, (row_idx, old_data) in sheet_matches.items():
-        if m_nr not in api_matches and str(old_data.get('I Kalender', '')).upper() == 'TRUE':
-            print(f"❌ Match {m_nr} finns ej i FOGIS längre. Markerar som FALSE.")
+    for safe_id, (row_idx, old_data) in sheet_matches.items():
+        if safe_id not in api_matches and str(old_data.get('I Kalender', '')).upper() == 'TRUE':
+            m_nr_original = str(old_data.get('Matchnr', ''))
+            print(f"❌ Match {m_nr_original} finns ej i FOGIS längre. Markerar som FALSE.")
             sheet.update_cell(row_idx, 9, "Borttagen från FOGIS (Inställd)")
             sheet.update_cell(row_idx, 10, now_str)
             sheet.update_cell(row_idx, 11, "FALSE")
@@ -150,7 +159,6 @@ def sync_and_generate():
             slut_str = str(row.get('Slut', '')).strip()
             if slut_str:
                 end_dt = local_tz.localize(datetime.strptime(f"{datum_str} {slut_str}", "%Y-%m-%d %H:%M"))
-                # Om tiden passerat midnatt, lägg till en dag
                 if end_dt < start_dt:
                     end_dt += timedelta(days=1)
             else:
