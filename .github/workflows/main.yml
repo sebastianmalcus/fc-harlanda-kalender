@@ -1,39 +1,37 @@
-name: Publicera Kalender via GitHub Pages
+name: Uppdatera Kalender
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    - cron: '0 */6 * * *' # Körs automatiskt var 6:e timme
+  workflow_dispatch: # Gör att du kan klicka på "Run workflow" manuellt
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checka ut kod
-        uses: actions/checkout@v3
+    - name: Hämta koden
+      uses: actions/checkout@v4
 
-      - name: Vänta i 30 sekunder (Delay)
-        run: sleep 30
+    - name: Sätt upp Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-      - name: Installera Python och bibliotek
-        run: |
-          pip install requests beautifulsoup4 icalendar
+    - name: Installera nödvändiga bibliotek
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests icalendar pytz gspread google-auth
 
-      - name: Generera kalenderfil
-        env:
-          # HÄR KOPPLAR VI DIN SECRET TILL KODEN
-          FOGIS_API_KEY: ${{ secrets.FOGIS_API_KEY }}
-        run: python generator.py
+    - name: Kör Python-skriptet
+      env:
+        FOGIS_API_KEY: ${{ secrets.FOGIS_API_KEY }}
+        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+      run: python generator.py
 
-      - name: Spara filen i arkivet
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
-          git add kalender.ics
-          git commit -m "Uppdaterad kalender via robot" || echo "Inga ändringar"
-          git push
+    - name: Spara och ladda upp den nya kalendern
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add kalender.ics
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-uppdaterad kalender via FOGIS och Sheets" && git push)
