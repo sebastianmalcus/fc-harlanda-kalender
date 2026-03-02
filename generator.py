@@ -1,54 +1,71 @@
 import os
+import json
 import requests
+import gspread
+from google.oauth2.service_account import Credentials
+from icalendar import Calendar, Event
+from datetime import datetime, timedelta
+import pytz
 
-def test_fogis_api():
-    FOGIS_API_KEY = os.getenv('FOGIS_API_KEY', '').strip()
-    TEAM_ID = 107561 # Vårt nuvarande ID för Prisoners
+# --- KONFIGURATION ---
+# Vi hämtar nyckeln och rensar eventuella osynliga tecken direkt
+FOGIS_API_KEY = os.getenv('FOGIS_API_KEY', '').strip()
+GOOGLE_JSON = os.getenv('GOOGLE_CREDENTIALS_JSON', '').strip() 
+SPREADSHEET_NAME = "kalenderFCHP"
+TEAM_ID = 107561
+
+def sync_and_generate():
+    local_tz = pytz.timezone("Europe/Stockholm")
     
-    print("🚀 Startar test av FOGIS API...")
+    print("🚀 Startar synkronisering...")
+
+    # 1. ANSLUT TILL GOOGLE SHEETS
+    scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    creds_dict = json.loads(GOOGLE_JSON)
+    creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+    client = gspread.authorize(creds)
+    sheet = client.open(SPREADSHEET_NAME).sheet1
     
-    if not FOGIS_API_KEY:
-        print("❌ FEL: FOGIS_API_KEY saknas i Secrets.")
-        return
-        
-    date_from = "2026-01-01"
-    date_to = "2026-12-31"
-    url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}&w=3"
+    # 2. HÄMTA MATCHER FRÅN FOGIS (MED DUBBEL NYCKEL-SÄNDNING)
+    date_from, date_to = "2026-01-01", "2026-12-31"
+    # Vi lägger nyckeln direkt i URL:en för att garantera att den når fram
+    url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}&w=3&subscription-key={FOGIS_API_KEY}"
     
     headers = {
         'Ocp-Apim-Subscription-Key': FOGIS_API_KEY,
         'Accept': 'application/json'
     }
     
-    print(f"⏳ Anropar FOGIS API från {date_from} till {date_to}...")
+    print(f"⏳ Hämtar matcher från FOGIS...")
     response = requests.get(url, headers=headers)
     
-    print(f"HTTP Status: {response.status_code}")
-    
     if response.status_code != 200:
-        print(f"❌ Fel från FOGIS: {response.text}")
+        print(f"❌ FOGIS-fel ({response.status_code}): {response.text}")
         return
+
+    games = response.json().get('games', [])
+    prisoners_games = [g for g in games if g.get('homeTeamId') == TEAM_ID or g.get('awayTeamId') == TEAM_ID]
+    print(f"✅ Hittade {len(prisoners_games)} matcher för Prisoners.")
+
+    # 3. UPPDATERA ARKET
+    all_rows = sheet.get_all_records()
+    sheet_matches = {str(r.get('Matchnr')): i + 2 for i, r in enumerate(all_rows) if r.get('Matchnr')}
+
+    for g in prisoners_games:
+        m_nr = str(g.get('gameNumber'))
+        datum = g.get('timeAsDateTime', '').split('T')[0]
+        tid = g.get('timeAsDateTime', '').split('T')[1][:5] if 'T' in g.get('timeAsDateTime', '') else ''
+        plats = g.get('venueName', 'Ej fastställt')
+        desc = f"Match: {g.get('homeTeamName')} - {g.get('awayTeamName')}\nSerie: {g.get('competitionName')}"
         
-    try:
-        data = response.json()
-        games = data.get('games', [])
-        print(f"✅ Fick svar! Hittade totalt {len(games)} matcher för hela FC Härlanda.")
-        
-        if len(games) > 0:
-            print("\n🔍 Analyserar de 3 första matcherna i klubben för att hitta lag-ID:")
-            for g in games[:3]:
-                print(f"- {g.get('homeTeamName')} vs {g.get('awayTeamName')}")
-                print(f"  Hemma-ID: {g.get('homeTeamId')} | Borta-ID: {g.get('awayTeamId')}")
-                
-        # Testa om Prisoners har några matcher alls med vårt nuvarande ID
-        prisoners_games = [g for g in games if g.get('homeTeamId') == TEAM_ID or g.get('awayTeamId') == TEAM_ID]
-        print(f"\n⚽ Antal matcher som matchar Team ID {TEAM_ID} (Prisoners): {len(prisoners_games)}")
-        
-        if len(games) > 0 and len(prisoners_games) == 0:
-            print("⚠️ Hela klubben har matcher, men inga för Prisoners! Vi använder nog fel Team-ID.")
-            
-    except Exception as e:
-        print(f"❌ Kunde inte tolka svaret från FOGIS: {e}")
+        row = [datum, tid, "", plats, "Match", desc, m_nr]
+
+        if m_nr in sheet_matches:
+            sheet.update(f"A{sheet_matches[m_nr]}:G{sheet_matches[m_nr]}", [row])
+        else:
+            sheet.append_row(row)
+
+    print("🎉 Allt klart! Kalkylarket är uppdaterat.")
 
 if __name__ == "__main__":
-    test_fogis_api()
+    sync_and_generate()
