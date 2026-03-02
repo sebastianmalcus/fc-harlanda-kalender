@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 import pytz
 
 # --- KONFIGURATION ---
-# Vi hämtar nyckeln och rensar eventuella osynliga tecken direkt
 FOGIS_API_KEY = os.getenv('FOGIS_API_KEY', '').strip()
 GOOGLE_JSON = os.getenv('GOOGLE_CREDENTIALS_JSON', '').strip() 
 SPREADSHEET_NAME = "kalenderFCHP"
@@ -16,39 +15,45 @@ TEAM_ID = 107561
 
 def sync_and_generate():
     local_tz = pytz.timezone("Europe/Stockholm")
-    
     print("🚀 Startar synkronisering...")
 
-    # 1. ANSLUT TILL GOOGLE SHEETS
+    # 1. ANSLUT TILL GOOGLE SHEETS (Vi vet att detta fungerar!)
     scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     creds_dict = json.loads(GOOGLE_JSON)
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
     client = gspread.authorize(creds)
     sheet = client.open(SPREADSHEET_NAME).sheet1
     
-    # 2. HÄMTA MATCHER FRÅN FOGIS (MED DUBBEL NYCKEL-SÄNDNING)
+    # 2. HÄMTA MATCHER FRÅN FOGIS
+    # Vi använder en Session för att garantera att headers skickas korrekt
+    session = requests.Session()
+    session.headers.update({
+        'Ocp-Apim-Subscription-Key': FOGIS_API_KEY,
+        'Cache-Control': 'no-cache',
+        'Accept': 'application/json'
+    })
+    
     date_from, date_to = "2026-01-01", "2026-12-31"
-    # Vi lägger nyckeln direkt i URL:en för att garantera att den når fram
+    # Vi testar att skicka nyckeln både i header OCH som parameter i URL:en
     url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}&w=3&subscription-key={FOGIS_API_KEY}"
     
-    headers = {
-        'Ocp-Apim-Subscription-Key': FOGIS_API_KEY,
-        'Accept': 'application/json'
-    }
-    
-    print(f"⏳ Hämtar matcher från FOGIS...")
-    response = requests.get(url, headers=headers)
+    print(f"⏳ Anropar FOGIS...")
+    response = session.get(url)
     
     if response.status_code != 200:
-        print(f"❌ FOGIS-fel ({response.status_code}): {response.text}")
+        print(f"❌ FOGIS vägrar fortfarande (Status {response.status_code})")
+        print(f"Svar från server: {response.text}")
         return
 
-    games = response.json().get('games', [])
+    data = response.json()
+    games = data.get('games', [])
     prisoners_games = [g for g in games if g.get('homeTeamId') == TEAM_ID or g.get('awayTeamId') == TEAM_ID]
-    print(f"✅ Hittade {len(prisoners_games)} matcher för Prisoners.")
+    
+    print(f"✅ Succé! Hittade {len(prisoners_games)} matcher för Prisoners.")
 
     # 3. UPPDATERA ARKET
     all_rows = sheet.get_all_records()
+    # Skapa index (Matchnr -> Radnummer)
     sheet_matches = {str(r.get('Matchnr')): i + 2 for i, r in enumerate(all_rows) if r.get('Matchnr')}
 
     for g in prisoners_games:
@@ -61,11 +66,13 @@ def sync_and_generate():
         row = [datum, tid, "", plats, "Match", desc, m_nr]
 
         if m_nr in sheet_matches:
+            # Uppdatera befintlig
             sheet.update(f"A{sheet_matches[m_nr]}:G{sheet_matches[m_nr]}", [row])
         else:
+            # Lägg till ny
             sheet.append_row(row)
 
-    print("🎉 Allt klart! Kalkylarket är uppdaterat.")
+    print("🎉 Kalkylarket är nu uppdaterat med riktiga matcher!")
 
 if __name__ == "__main__":
     sync_and_generate()
