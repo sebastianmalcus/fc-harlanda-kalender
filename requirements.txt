@@ -1,5 +1,5 @@
-flask
 requests
-beautifulsoup4
 icalendar
-gunicorn
+pytz
+gspread
+google-auth
