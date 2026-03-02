@@ -8,7 +8,7 @@ Detta projekt håller FC Härlanda Prisoners lagkalender ständigt uppdaterad. D
 
 Kopiera länken nedan och följ instruktionerna för din telefon. *(Obs: Klicka inte på länken, den ska kopieras och klistras in i kalender-appen!)*
 
-**Kalenderlänk:** `https://raw.githubusercontent.com/sebastianmalcus/fc-harlanda-kalender/main/kalender.ics`
+**Kalenderlänk:** `https://sebastianmalcus.github.io/fc-harlanda-kalender/kalender.ics`
 *(Ändra `sebastianmalcus` och repots namn om länken ovan inte stämmer exakt)*
 
 ### 🍎 iPhone / iOS
