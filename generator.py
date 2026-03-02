@@ -15,29 +15,38 @@ TEAM_ID = 107561
 
 def sync_and_generate():
     local_tz = pytz.timezone("Europe/Stockholm")
-    print("🚀 Startar synkronisering...")
+    now_str = datetime.now(local_tz).strftime("%Y-%m-%d %H:%M:%S")
+    print("🚀 Startar smart synkronisering med tidsjustering...")
 
-    # 1. ANSLUT TILL GOOGLE SHEETS
+    # ==========================================
+    # 1. ANSLUT TILL GOOGLE SHEETS & HÄMTA CACHE
+    # ==========================================
     scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     creds_dict = json.loads(GOOGLE_JSON)
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
     client = gspread.authorize(creds)
     sheet = client.open(SPREADSHEET_NAME).sheet1
     
+    all_rows = sheet.get_all_records()
+    
+    sheet_matches = {}
+    for i, row in enumerate(all_rows):
+        if str(row.get('Källa', '')).upper() == 'FOGIS' and row.get('Matchnr'):
+            sheet_matches[str(row['Matchnr'])] = (i + 2, row)
+
+    # ==========================================
     # 2. HÄMTA MATCHER FRÅN FOGIS
+    # ==========================================
     date_from, date_to = "2026-01-01", "2026-12-31"
     url = f"https://forening-api.svenskfotboll.se/club/upcoming-games?from={date_from}&to={date_to}&w=3"
     
-    # HÄR ÄR FIXEN: Vi skickar 'ApiKey' precis som ditt curl-test
     headers = {
         'ApiKey': FOGIS_API_KEY,
         'Cache-Control': 'no-cache',
         'Accept': 'application/json'
     }
     
-    print(f"⏳ Anropar FOGIS API...")
     response = requests.get(url, headers=headers)
-    
     if response.status_code != 200:
         print(f"❌ FOGIS-fel ({response.status_code}): {response.text}")
         return
@@ -45,27 +54,127 @@ def sync_and_generate():
     data = response.json()
     games = data.get('games', [])
     prisoners_games = [g for g in games if g.get('homeTeamId') == TEAM_ID or g.get('awayTeamId') == TEAM_ID]
-    print(f"✅ Lyckades! Hittade {len(prisoners_games)} matcher för Prisoners.")
+    api_matches = {str(g.get('gameNumber')): g for g in prisoners_games}
 
-    # 3. UPPDATERA ARKET
-    all_rows = sheet.get_all_records()
-    sheet_matches = {str(r.get('Matchnr')): i + 2 for i, r in enumerate(all_rows) if r.get('Matchnr')}
-
-    for g in prisoners_games:
-        m_nr = str(g.get('gameNumber'))
-        datum = g.get('timeAsDateTime', '').split('T')[0]
-        tid = g.get('timeAsDateTime', '').split('T')[1][:5] if 'T' in g.get('timeAsDateTime', '') else ''
-        plats = g.get('venueName', 'Ej fastställt')
-        desc = f"Match: {g.get('homeTeamName')} - {g.get('awayTeamName')}\nSerie: {g.get('competitionName')}"
+    # ==========================================
+    # 3. SYNKRONISERA OCH LOGGA FÖRÄNDRINGAR
+    # ==========================================
+    for m_nr, g in api_matches.items():
+        match_dt_str = g.get('timeAsDateTime', '')
         
-        row = [datum, tid, "", plats, "Match", desc, m_nr]
-
-        if m_nr in sheet_matches:
-            sheet.update(f"A{sheet_matches[m_nr]}:G{sheet_matches[m_nr]}", [row])
+        # Tidslogik: Samling 75 min innan, Slut 110 min efter
+        if 'T' in match_dt_str and len(match_dt_str) >= 16:
+            match_start_dt = datetime.strptime(match_dt_str[:16], "%Y-%m-%dT%H:%M")
+            samling_dt = match_start_dt - timedelta(minutes=75)
+            slut_dt = match_start_dt + timedelta(minutes=110)
+            
+            datum = samling_dt.strftime("%Y-%m-%d")
+            tid = samling_dt.strftime("%H:%M")          # Samlingstid
+            slut_tid = slut_dt.strftime("%H:%M")        # Sluttid
+            match_tid_str = match_start_dt.strftime("%H:%M") # Faktisk matchstart
         else:
-            sheet.append_row(row)
+            datum = match_dt_str.split('T')[0] if match_dt_str else ''
+            tid = ''
+            slut_tid = ''
+            match_tid_str = 'Ej fastställd'
 
-    print("🎉 Kalkylarket är nu uppdaterat med riktiga matcher!")
+        plats = g.get('venueName', 'Ej fastställt')
+        hemma = g.get('homeTeamName', '')
+        borta = g.get('awayTeamName', '')
+        
+        # Ny beskrivning med tydlig matchstart
+        desc = f"Match: {hemma} - {borta}\nMatchstart: {match_tid_str}"
+        
+        if m_nr in sheet_matches:
+            row_idx, old_data = sheet_matches[m_nr]
+            changes = []
+            
+            if str(old_data.get('Datum', '')) != datum:
+                changes.append(f"Datum: {old_data.get('Datum', '')} -> {datum}")
+            if str(old_data.get('Start', '')) != tid:
+                changes.append(f"Samling: {old_data.get('Start', '')} -> {tid}")
+            if str(old_data.get('Slut', '')) != slut_tid:
+                changes.append(f"Slut: {old_data.get('Slut', '')} -> {slut_tid}")
+            if str(old_data.get('Plats', '')) != plats:
+                changes.append(f"Plats: {old_data.get('Plats', '')} -> {plats}")
+                
+            # Uppdatera om något viktigt ändrats (eller om beskrivningen är gammal)
+            if changes or str(old_data.get('Beskrivning', '')) != desc:
+                change_log = " | ".join(changes) if changes else "Beskrivning uppdaterad"
+                print(f"🔄 Uppdaterar match {m_nr}: {change_log}")
+                updated_row = [datum, tid, slut_tid, plats, "Match", desc, m_nr, "FOGIS", change_log, now_str, "TRUE"]
+                sheet.update(f"A{row_idx}:K{row_idx}", [updated_row])
+            elif str(old_data.get('I Kalender', '')).upper() != 'TRUE':
+                print(f"🔄 Återaktiverar match {m_nr}")
+                sheet.update_cell(row_idx, 9, "Återaktiverad från FOGIS") 
+                sheet.update_cell(row_idx, 10, now_str) 
+                sheet.update_cell(row_idx, 11, "TRUE")  
+        else:
+            print(f"➕ Lägger till ny match: {m_nr} (Samling {tid})")
+            new_row = [datum, tid, slut_tid, plats, "Match", desc, m_nr, "FOGIS", "Ny match", now_str, "TRUE"]
+            sheet.append_row(new_row)
+
+    # 3b. Hitta inställda/borttagna matcher
+    for m_nr, (row_idx, old_data) in sheet_matches.items():
+        if m_nr not in api_matches and str(old_data.get('I Kalender', '')).upper() == 'TRUE':
+            print(f"❌ Match {m_nr} finns ej i FOGIS längre. Markerar som FALSE.")
+            sheet.update_cell(row_idx, 9, "Borttagen från FOGIS (Inställd)")
+            sheet.update_cell(row_idx, 10, now_str)
+            sheet.update_cell(row_idx, 11, "FALSE")
+
+    # ==========================================
+    # 4. SKAPA ICS-FILEN
+    # ==========================================
+    print("📅 Genererar kalenderfil...")
+    final_rows = sheet.get_all_records()
+    
+    cal = Calendar()
+    cal.add('prodid', '-//FC Harlanda//Fotbollskalender//SV')
+    cal.add('version', '2.0')
+    cal.add('x-wr-calname', 'FC Härlanda')
+    
+    for row in final_rows:
+        try:
+            i_kalender = str(row.get('I Kalender', '')).strip().upper()
+            if i_kalender == 'FALSE':
+                continue 
+
+            datum_str = str(row.get('Datum', '')).strip()
+            start_str = str(row.get('Start', '')).strip()
+            
+            if not datum_str or not start_str:
+                continue
+                
+            start_dt = local_tz.localize(datetime.strptime(f"{datum_str} {start_str}", "%Y-%m-%d %H:%M"))
+            
+            slut_str = str(row.get('Slut', '')).strip()
+            if slut_str:
+                end_dt = local_tz.localize(datetime.strptime(f"{datum_str} {slut_str}", "%Y-%m-%d %H:%M"))
+                # Om tiden passerat midnatt, lägg till en dag
+                if end_dt < start_dt:
+                    end_dt += timedelta(days=1)
+            else:
+                end_dt = start_dt + timedelta(hours=2)
+
+            event = Event()
+            typ = str(row.get('Typ', 'Aktivitet'))
+            plats = str(row.get('Plats', ''))
+            beskrivning = str(row.get('Beskrivning', ''))
+            
+            event.add('summary', f"{typ}: {plats}")
+            event.add('dtstart', start_dt)
+            event.add('dtend', end_dt)
+            event.add('location', plats)
+            event.add('description', beskrivning)
+            
+            cal.add_component(event)
+        except Exception as e:
+            continue
+
+    with open('kalender.ics', 'wb') as f:
+        f.write(cal.to_ical())
+    
+    print("🎉 Allt klart! Logg uppdaterad och ny kalenderfil skapad.")
 
 if __name__ == "__main__":
     sync_and_generate()
