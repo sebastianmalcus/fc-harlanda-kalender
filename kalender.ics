@@ -294,10 +294,10 @@ DESCRIPTION:Match: Kode IF - FC Härlanda\nMatchstart: 19:00
 LOCATION:Kode IP 3 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Överåsvallen 1 Konstgräs
+SUMMARY:Match: Kviberg 9 KG
 DTSTART;TZID=Europe/Stockholm:20261017T130000
 DTEND;TZID=Europe/Stockholm:20261017T160500
 DESCRIPTION:Match: FC Härlanda - Hälsö BK\nMatchstart: 14:15
-LOCATION:Överåsvallen 1 Konstgräs
+LOCATION:Kviberg 9 KG
 END:VEVENT
 END:VCALENDAR
