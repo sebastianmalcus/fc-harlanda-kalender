@@ -68,9 +68,9 @@ DESCRIPTION:Match: FC Härlanda Prisoners (D6H) - FC Heden (D6H)\nMatchsta
 LOCATION:Överåsvallen 1 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
+SUMMARY:Mysträning + Sverigematch/ ÖL: Heden - Nr 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260326T183000
-DTEND;TZID=Europe/Stockholm:20260326T200000
+DTEND;TZID=Europe/Stockholm:20260326T230000
 DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
