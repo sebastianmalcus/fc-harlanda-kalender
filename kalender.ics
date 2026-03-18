@@ -124,13 +124,6 @@ DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260424T180000
-DTEND;TZID=Europe/Stockholm:20260424T210500
-DESCRIPTION:Match: Solväders FC - FC Härlanda\nMatchstart: 19:15
-LOCATION:Länsmansgårdens IP 2 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Träning: Heden - Nr 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260427T200000
 DTEND;TZID=Europe/Stockholm:20260427T213000
@@ -235,13 +228,6 @@ DTSTART;TZID=Europe/Stockholm:20260816T124500
 DTEND;TZID=Europe/Stockholm:20260816T155000
 DESCRIPTION:Match: Fotö GoIF - FC Härlanda\nMatchstart: 14:00
 LOCATION:Fotö 1 Gräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Match: Heden 3 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260820T190000
-DTEND;TZID=Europe/Stockholm:20260820T220500
-DESCRIPTION:Match: FC Härlanda - Solväders FC\nMatchstart: 20:15
-LOCATION:Heden 3 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Tuvevallen 1 Gräs
