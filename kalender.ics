@@ -280,11 +280,11 @@ DESCRIPTION:Match: FC Härlanda - Hälsö BK\nMatchstart: 14:15
 LOCATION:Kviberg 9 KG
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Sälöfjordsvallen 2 K.Gräs
+SUMMARY:Match: Apelsinplan 2 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260401T185000
 DTEND;TZID=Europe/Stockholm:20260401T215500
 DESCRIPTION:Match: FC Härlanda Prisoners (D6H) - Johannebergs IF (D7H)\nM
  atchstart: 20:05
-LOCATION:Sälöfjordsvallen 2 K.Gräs
+LOCATION:Apelsinplan 2 Konstgräs
 END:VEVENT
 END:VCALENDAR
