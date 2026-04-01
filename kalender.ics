@@ -103,13 +103,6 @@ DESCRIPTION:Match: Backatorp IF - FC Härlanda\nMatchstart: 20:15
 LOCATION:Backavallen 1 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260504T180000
-DTEND;TZID=Europe/Stockholm:20260504T210500
-DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:15
-LOCATION:Länsmansgårdens IP 2 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Träning: Heden - Nr 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260420T200000
 DTEND;TZID=Europe/Stockholm:20260420T213000
@@ -124,18 +117,18 @@ DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Heden 3 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260830T224500
-DTEND;TZID=Europe/Stockholm:20260831T015000
-DESCRIPTION:Match: FC Härlanda - Finlandia Pallo AIF\nMatchstart: 00:00
-LOCATION:Heden 3 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Träning: Heden - Nr 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260504T200000
 DTEND;TZID=Europe/Stockholm:20260504T213000
 DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260504T180000
+DTEND;TZID=Europe/Stockholm:20260504T210500
+DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:15
+LOCATION:Länsmansgårdens IP 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Gröna Vallen 1
@@ -216,6 +209,13 @@ DESCRIPTION:Match: Hälsö BK - FC Härlanda\nMatchstart: 19:00
 LOCATION:Stuvö Backe (Hälsö 1 Gräs)
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Match: Tuvevallen 1 Gräs
+DTSTART;TZID=Europe/Stockholm:20260827T174500
+DTEND;TZID=Europe/Stockholm:20260827T205000
+DESCRIPTION:Match: Finlandia Pallo AIF - FC Härlanda\nMatchstart: 19:00
+LOCATION:Tuvevallen 1 Gräs
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Match: Fotö 1 Gräs
 DTSTART;TZID=Europe/Stockholm:20260829T114500
 DTEND;TZID=Europe/Stockholm:20260829T145000
@@ -223,11 +223,11 @@ DESCRIPTION:Match: Fotö GoIF - FC Härlanda\nMatchstart: 13:00
 LOCATION:Fotö 1 Gräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Tuvevallen 1 Gräs
-DTSTART;TZID=Europe/Stockholm:20260827T174500
-DTEND;TZID=Europe/Stockholm:20260827T205000
-DESCRIPTION:Match: Finlandia Pallo AIF - FC Härlanda\nMatchstart: 19:00
-LOCATION:Tuvevallen 1 Gräs
+SUMMARY:Match: Heden 3 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260830T224500
+DTEND;TZID=Europe/Stockholm:20260831T015000
+DESCRIPTION:Match: FC Härlanda - Finlandia Pallo AIF\nMatchstart: 00:00
+LOCATION:Heden 3 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Heden 3 Konstgräs
@@ -278,13 +278,5 @@ DTSTART;TZID=Europe/Stockholm:20261017T130000
 DTEND;TZID=Europe/Stockholm:20261017T160500
 DESCRIPTION:Match: FC Härlanda - Hälsö BK\nMatchstart: 14:15
 LOCATION:Kviberg 9 KG
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Match: Apelsinplan 2 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260401T185000
-DTEND;TZID=Europe/Stockholm:20260401T215500
-DESCRIPTION:Match: FC Härlanda Prisoners (D6H) - Johannebergs IF (D7H)\nM
- atchstart: 20:05
-LOCATION:Apelsinplan 2 Konstgräs
 END:VEVENT
 END:VCALENDAR
