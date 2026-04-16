@@ -110,6 +110,13 @@ DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Träning: Härlanda Park - Nr 1 Konstgräs 11m
+DTSTART;TZID=Europe/Stockholm:20260422T203000
+DTEND;TZID=Europe/Stockholm:20260422T220000
+DESCRIPTION:Träning
+LOCATION:Härlanda Park - Nr 1 Konstgräs 11m
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Träning: Heden - Nr 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260427T200000
 DTEND;TZID=Europe/Stockholm:20260427T213000
@@ -117,11 +124,11 @@ DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260504T200000
-DTEND;TZID=Europe/Stockholm:20260504T213000
+SUMMARY:Träning: Åkeredsvallen - Konstgräs 11m
+DTSTART;TZID=Europe/Stockholm:20260429T200000
+DTEND;TZID=Europe/Stockholm:20260429T213000
 DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
+LOCATION:Åkeredsvallen - Konstgräs 11m
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
@@ -129,6 +136,13 @@ DTSTART;TZID=Europe/Stockholm:20260504T180000
 DTEND;TZID=Europe/Stockholm:20260504T210500
 DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:15
 LOCATION:Länsmansgårdens IP 2 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Åkeredsvallen - Konstgräs 11m
+DTSTART;TZID=Europe/Stockholm:20260507T200000
+DTEND;TZID=Europe/Stockholm:20260507T213000
+DESCRIPTION:Träning
+LOCATION:Åkeredsvallen - Konstgräs 11m
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Gröna Vallen 1
