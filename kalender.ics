@@ -132,9 +132,9 @@ LOCATION:Åkeredsvallen - Konstgräs 11m
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260504T180000
-DTEND;TZID=Europe/Stockholm:20260504T210500
-DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:15
+DTSTART;TZID=Europe/Stockholm:20260504T190000
+DTEND;TZID=Europe/Stockholm:20260504T220500
+DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 20:15
 LOCATION:Länsmansgårdens IP 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
