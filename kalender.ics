@@ -217,9 +217,9 @@ LOCATION:Åkeredsvallen 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Knippla 1 Gräs
-DTSTART;TZID=Europe/Stockholm:20260606T104500
-DTEND;TZID=Europe/Stockholm:20260606T135000
-DESCRIPTION:Match: Knippla IK - FC Härlanda\nMatchstart: 12:00
+DTSTART;TZID=Europe/Stockholm:20260608T174500
+DTEND;TZID=Europe/Stockholm:20260608T205000
+DESCRIPTION:Match: Knippla IK - FC Härlanda\nMatchstart: 19:00
 LOCATION:Knippla 1 Gräs
 END:VEVENT
 BEGIN:VEVENT
