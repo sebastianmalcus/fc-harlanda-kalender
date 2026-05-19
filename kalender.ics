@@ -152,11 +152,32 @@ DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:00
 LOCATION:Länsmansgårdens IP 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260511T200000
+DTEND;TZID=Europe/Stockholm:20260511T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Match: Heden 3 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260514T190000
 DTEND;TZID=Europe/Stockholm:20260514T220500
 DESCRIPTION:Match: FC Härlanda - Lindholmens BK\nMatchstart: 20:15
 LOCATION:Heden 3 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260518T200000
+DTEND;TZID=Europe/Stockholm:20260518T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning/Match: Apelsinplan - Konstgräs 11m
+DTSTART;TZID=Europe/Stockholm:20260521T200000
+DTEND;TZID=Europe/Stockholm:20260521T220000
+DESCRIPTION:Träning/Match
+LOCATION:Apelsinplan - Konstgräs 11m
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Heden 4 Konstgräs
@@ -167,11 +188,25 @@ DESCRIPTION:Match: Gambian Mix IF Göteborg - FC Härlanda\nMatchstart: 16
 LOCATION:Heden 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260525T200000
+DTEND;TZID=Europe/Stockholm:20260525T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Match: Heden 3 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260528T190000
 DTEND;TZID=Europe/Stockholm:20260528T220500
 DESCRIPTION:Match: FC Härlanda - BK Skottfint\nMatchstart: 20:15
 LOCATION:Heden 3 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260601T200000
+DTEND;TZID=Europe/Stockholm:20260601T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Åkeredsvallen 2 Konstgräs
@@ -181,11 +216,11 @@ DESCRIPTION:Match: FC Härlanda - Finlandia Pallo AIF\nMatchstart: 20:15
 LOCATION:Åkeredsvallen 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Knippla 1 Gräs
-DTSTART;TZID=Europe/Stockholm:20260608T174500
-DTEND;TZID=Europe/Stockholm:20260608T205000
-DESCRIPTION:Match: Knippla IK - FC Härlanda\nMatchstart: 19:00
-LOCATION:Knippla 1 Gräs
+SUMMARY:Träning: Heden - Nr 4 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260608T200000
+DTEND;TZID=Europe/Stockholm:20260608T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Heden 3 Konstgräs
@@ -195,11 +230,25 @@ DESCRIPTION:Match: FC Härlanda - Kode IF\nMatchstart: 20:15
 LOCATION:Heden 3 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Träning: Kvibergs Park - Nr 15 Gräs
+DTSTART;TZID=Europe/Stockholm:20260615T190000
+DTEND;TZID=Europe/Stockholm:20260615T203000
+DESCRIPTION:Träning
+LOCATION:Kvibergs Park - Nr 15 Gräs
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Match: Stuvö Backe (Hälsö 1 Gräs)
 DTSTART;TZID=Europe/Stockholm:20260617T174500
 DTEND;TZID=Europe/Stockholm:20260617T205000
 DESCRIPTION:Match: Hälsö BK - FC Härlanda\nMatchstart: 19:00
 LOCATION:Stuvö Backe (Hälsö 1 Gräs)
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260727T200000
+DTEND;TZID=Europe/Stockholm:20260727T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Tuvevallen 1 Gräs
@@ -266,66 +315,10 @@ DESCRIPTION:Match: FC Härlanda - Hälsö BK\nMatchstart: 14:15
 LOCATION:Kviberg 9 KG
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260511T200000
-DTEND;TZID=Europe/Stockholm:20260511T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260518T200000
-DTEND;TZID=Europe/Stockholm:20260518T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260525T200000
-DTEND;TZID=Europe/Stockholm:20260525T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260601T200000
-DTEND;TZID=Europe/Stockholm:20260601T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260608T200000
-DTEND;TZID=Europe/Stockholm:20260608T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Kvibergs Park - Nr 15 Gräs
-DTSTART;TZID=Europe/Stockholm:20260615T190000
-DTEND;TZID=Europe/Stockholm:20260615T203000
-DESCRIPTION:Träning
-LOCATION:Kvibergs Park - Nr 15 Gräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260615T200000
-DTEND;TZID=Europe/Stockholm:20260615T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260727T200000
-DTEND;TZID=Europe/Stockholm:20260727T213000
-DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Träning/Match: Apelsinplan - Konstgräs 11m
-DTSTART;TZID=Europe/Stockholm:20260521T200000
-DTEND;TZID=Europe/Stockholm:20260521T220000
-DESCRIPTION:Träning/Match
-LOCATION:Apelsinplan - Konstgräs 11m
+SUMMARY:Match: Knippla 1 Gräs
+DTSTART;TZID=Europe/Stockholm:20260608T174500
+DTEND;TZID=Europe/Stockholm:20260608T205000
+DESCRIPTION:Match: Knippla IK - FC Härlanda\nMatchstart: 19:00
+LOCATION:Knippla 1 Gräs
 END:VEVENT
 END:VCALENDAR
