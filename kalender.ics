@@ -173,13 +173,6 @@ DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Träning/Match: Apelsinplan - Konstgräs 11m
-DTSTART;TZID=Europe/Stockholm:20260521T200000
-DTEND;TZID=Europe/Stockholm:20260521T220000
-DESCRIPTION:Träning/Match
-LOCATION:Apelsinplan - Konstgräs 11m
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Match: Heden 4 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260524T150000
 DTEND;TZID=Europe/Stockholm:20260524T180500
