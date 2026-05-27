@@ -131,6 +131,13 @@ DESCRIPTION:Träning
 LOCATION:Åkeredsvallen - Konstgräs 11m
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
+DTSTART;TZID=Europe/Stockholm:20260504T174500
+DTEND;TZID=Europe/Stockholm:20260504T205000
+DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:00
+LOCATION:Länsmansgårdens IP 2 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Träning: Åkeredsvallen - Konstgräs 11m
 DTSTART;TZID=Europe/Stockholm:20260507T200000
 DTEND;TZID=Europe/Stockholm:20260507T213000
@@ -143,13 +150,6 @@ DTSTART;TZID=Europe/Stockholm:20260510T130000
 DTEND;TZID=Europe/Stockholm:20260510T160500
 DESCRIPTION:Match: Ösets BK - FC Härlanda\nMatchstart: 14:15
 LOCATION:Gröna Vallen 1
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Match: Länsmansgårdens IP 2 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260504T174500
-DTEND;TZID=Europe/Stockholm:20260504T205000
-DESCRIPTION:Match: FC Härlanda - Fotö GoIF\nMatchstart: 19:00
-LOCATION:Länsmansgårdens IP 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Träning: Heden - Nr 4 Konstgräs
@@ -209,11 +209,11 @@ DESCRIPTION:Match: FC Härlanda - Finlandia Pallo AIF\nMatchstart: 20:15
 LOCATION:Åkeredsvallen 2 Konstgräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
-DTSTART;TZID=Europe/Stockholm:20260608T200000
-DTEND;TZID=Europe/Stockholm:20260608T213000
+SUMMARY:Träning: Kvibergs Park - Nr 15 Gräs
+DTSTART;TZID=Europe/Stockholm:20260604T190000
+DTEND;TZID=Europe/Stockholm:20260604T203000
 DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
+LOCATION:Kvibergs Park - Nr 15 Gräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Knippla 1 Gräs
@@ -244,11 +244,60 @@ DESCRIPTION:Match: Hälsö BK - FC Härlanda\nMatchstart: 19:00
 LOCATION:Stuvö Backe (Hälsö 1 Gräs)
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Träning: Heden - Nr 4 Konstgräs
+SUMMARY:Träning: Åkeredsvallen - Konstgräs 11m
+DTSTART;TZID=Europe/Stockholm:20260623T200000
+DTEND;TZID=Europe/Stockholm:20260623T213000
+DESCRIPTION:Träning
+LOCATION:Åkeredsvallen - Konstgräs 11m
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lag-aktivitet: Lag-aktivitet
+DTSTART;TZID=Europe/Stockholm:20260627T130000
+DTEND;TZID=Europe/Stockholm:20260627T203000
+DESCRIPTION:Lag-aktivitet
+LOCATION:Lag-aktivitet
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs 11m - Halvplan 1
 DTSTART;TZID=Europe/Stockholm:20260727T200000
 DTEND;TZID=Europe/Stockholm:20260727T213000
 DESCRIPTION:Träning
-LOCATION:Heden - Nr 4 Konstgräs
+LOCATION:Heden - Nr 4 Konstgräs 11m - Halvplan 1
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 2 Konstgräs 11m - Halvplan 1
+DTSTART;TZID=Europe/Stockholm:20260803T200000
+DTEND;TZID=Europe/Stockholm:20260803T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 2 Konstgräs 11m - Halvplan 1
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 2 Konstgräs 11m - Halvplan 1
+DTSTART;TZID=Europe/Stockholm:20260810T200000
+DTEND;TZID=Europe/Stockholm:20260810T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 2 Konstgräs 11m - Halvplan 1
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 2 Konstgräs 11m - Halvplan 1
+DTSTART;TZID=Europe/Stockholm:20260817T200000
+DTEND;TZID=Europe/Stockholm:20260817T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 2 Konstgräs 11m - Halvplan 1
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 3 Konstgräs 11m - Helplan
+DTSTART;TZID=Europe/Stockholm:20260820T200000
+DTEND;TZID=Europe/Stockholm:20260820T220000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 3 Konstgräs 11m - Helplan
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 2 Konstgräs 11m - Halvplan 1
+DTSTART;TZID=Europe/Stockholm:20260824T200000
+DTEND;TZID=Europe/Stockholm:20260824T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 2 Konstgräs 11m - Halvplan 1
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Match: Tuvevallen 1 Gräs
