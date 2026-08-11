@@ -209,18 +209,18 @@ DESCRIPTION:Träning
 LOCATION:Kvibergs Park - Nr 15 Gräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Knippla 1 Gräs
-DTSTART;TZID=Europe/Stockholm:20260608T174500
-DTEND;TZID=Europe/Stockholm:20260608T205000
-DESCRIPTION:Match: Knippla IK - FC Härlanda\nMatchstart: 19:00
-LOCATION:Knippla 1 Gräs
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Match: Heden 3 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260611T190000
 DTEND;TZID=Europe/Stockholm:20260611T220500
 DESCRIPTION:Match: FC Härlanda - Kode IF\nMatchstart: 20:15
 LOCATION:Heden 3 Konstgräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Match: Tuvevallen 1 Gräs
+DTSTART;TZID=Europe/Stockholm:20260827T174500
+DTEND;TZID=Europe/Stockholm:20260827T205000
+DESCRIPTION:Match: Finlandia Pallo AIF - FC Härlanda\nMatchstart: 19:00
+LOCATION:Tuvevallen 1 Gräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Träning: Kvibergs Park - Nr 15 Gräs
@@ -230,11 +230,11 @@ DESCRIPTION:Träning
 LOCATION:Kvibergs Park - Nr 15 Gräs
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Stuvö Backe (Hälsö 1 Gräs)
-DTSTART;TZID=Europe/Stockholm:20260617T174500
-DTEND;TZID=Europe/Stockholm:20260617T205000
-DESCRIPTION:Match: Hälsö BK - FC Härlanda\nMatchstart: 19:00
-LOCATION:Stuvö Backe (Hälsö 1 Gräs)
+SUMMARY:Match: Fotö 1 Gräs
+DTSTART;TZID=Europe/Stockholm:20260829T114500
+DTEND;TZID=Europe/Stockholm:20260829T145000
+DESCRIPTION:Match: Fotö GoIF - FC Härlanda\nMatchstart: 13:00
+LOCATION:Fotö 1 Gräs
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Träning: Åkeredsvallen - Konstgräs 11m
@@ -293,20 +293,6 @@ DESCRIPTION:Träning
 LOCATION:Heden - Nr 2 Konstgräs 11m - Halvplan 1
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Match: Tuvevallen 1 Gräs
-DTSTART;TZID=Europe/Stockholm:20260827T174500
-DTEND;TZID=Europe/Stockholm:20260827T205000
-DESCRIPTION:Match: Finlandia Pallo AIF - FC Härlanda\nMatchstart: 19:00
-LOCATION:Tuvevallen 1 Gräs
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Match: Fotö 1 Gräs
-DTSTART;TZID=Europe/Stockholm:20260829T114500
-DTEND;TZID=Europe/Stockholm:20260829T145000
-DESCRIPTION:Match: Fotö GoIF - FC Härlanda\nMatchstart: 13:00
-LOCATION:Fotö 1 Gräs
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Match: Heden 3 Konstgräs
 DTSTART;TZID=Europe/Stockholm:20260902T190000
 DTEND;TZID=Europe/Stockholm:20260902T220500
@@ -355,5 +341,19 @@ DTSTART;TZID=Europe/Stockholm:20261017T130000
 DTEND;TZID=Europe/Stockholm:20261017T160500
 DESCRIPTION:Match: FC Härlanda - Hälsö BK\nMatchstart: 14:15
 LOCATION:Kviberg 9 KG
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Match: Knippla 1 Gräs
+DTSTART;TZID=Europe/Stockholm:20260608T174500
+DTEND;TZID=Europe/Stockholm:20260608T205000
+DESCRIPTION:Match: Knippla IK - FC Härlanda\nMatchstart: 19:00
+LOCATION:Knippla 1 Gräs
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Match: Stuvö Backe (Hälsö 1 Gräs)
+DTSTART;TZID=Europe/Stockholm:20260617T174500
+DTEND;TZID=Europe/Stockholm:20260617T205000
+DESCRIPTION:Match: Hälsö BK - FC Härlanda\nMatchstart: 19:00
+LOCATION:Stuvö Backe (Hälsö 1 Gräs)
 END:VEVENT
 END:VCALENDAR
