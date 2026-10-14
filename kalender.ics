@@ -412,4 +412,81 @@ DTEND;TZID=Europe/Stockholm:20261019T213000
 DESCRIPTION:Träning
 LOCATION:Heden - Nr 4 Konstgräs 11m - Helplan
 END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Träning: Heden - Nr 4 Konstgräs 11m - Helplan
+DTSTART;TZID=Europe/Stockholm:20261026T200000
+DTEND;TZID=Europe/Stockholm:20261026T213000
+DESCRIPTION:Träning
+LOCATION:Heden - Nr 4 Konstgräs 11m - Helplan
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261029T200000
+DTEND;TZID=Europe/Stockholm:20261029T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261105T200000
+DTEND;TZID=Europe/Stockholm:20261105T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261112T200000
+DTEND;TZID=Europe/Stockholm:20261112T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261119T200000
+DTEND;TZID=Europe/Stockholm:20261119T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261126T200000
+DTEND;TZID=Europe/Stockholm:20261126T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261203T200000
+DTEND;TZID=Europe/Stockholm:20261203T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261210T200000
+DTEND;TZID=Europe/Stockholm:20261210T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20261217T200000
+DTEND;TZID=Europe/Stockholm:20261217T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20270107T200000
+DTEND;TZID=Europe/Stockholm:20270107T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Futsal: Rosendalshallen - D-Hallen
+DTSTART;TZID=Europe/Stockholm:20270114T200000
+DTEND;TZID=Europe/Stockholm:20270114T220000
+DESCRIPTION:Träning
+LOCATION:Rosendalshallen - D-Hallen
+END:VEVENT
 END:VCALENDAR
